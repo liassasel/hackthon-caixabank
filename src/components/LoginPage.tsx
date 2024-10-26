@@ -30,7 +30,7 @@ const LoginPage: React.FC = () => {
 
     if (email === defaultCredentials.email && password === defaultCredentials.password) {
         login();
-        navigate('/home');
+        navigate('/');
     } else {
         setError('Credenciales inválidas');
     }

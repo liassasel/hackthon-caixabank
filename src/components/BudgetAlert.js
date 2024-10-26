@@ -4,31 +4,50 @@ import { useStore } from '@nanostores/react';
 import { userSettingsStore } from '../stores/userSettingsStore';
 import { transactionsStore } from '../stores/transactionStore';
 import { Alert } from '@mui/material';
-import { budgetAlertStore } from '../stores/budgetAlertStore'; // Importar el store de alertas
+import { budgetAlertStore } from '../stores/budgetAlertStore';
 
 const BudgetAlert = () => {
     const userSettings = useStore(userSettingsStore);
     const transactions = useStore(transactionsStore);
 
-    // Instructions:
-    // - Calculate the total expenses from the transactions.
-    const totalExpense = 0; // Replace with the total expenses calculation.
+    // Calculate the total spend of all transactions
+    const totalExpense = transactions.reduce((acc, transaction) => acc + transaction.amount, 0);
 
-    // Determine if the budget has been exceeded
-    const budgetExceeded = false; // Replace with a comparison of totalExpense and userSettings.totalBudgetLimit
+    // Determine if the overall budget has been exceeded
+    const budgetExceeded = totalExpense > userSettings.totalBudgetLimit;
 
-    // Use the useEffect hook to update the budgetAlertStore when the budget is exceeded
+    // Determine if any category limits have been exceeded
+    const categoriesExceeded = transactions.reduce((acc, transaction) => {
+        const categoryLimit = userSettings.categoryLimits[transaction.category] || Infinity;
+        const categoryExpense = acc[transaction.category] || 0;
+        acc[transaction.category] = categoryExpense + transaction.amount;
+
+        return acc;
+    }, {});
+
+    const categoriesAlert = Object.entries(categoriesExceeded).some(
+        ([category, expense]) => expense > (userSettings.categoryLimits[category] || Infinity)
+    );
+
     useEffect(() => {
-        // Instructions:
-        // - If the budget has been exceeded, set the `isVisible` property in the `budgetAlertStore` to true and provide a warning message.
-        // - If the budget has not been exceeded, set `isVisible` to false and clear the message.
-    }, [budgetExceeded, userSettings.totalBudgetLimit]);
+        if (budgetExceeded || categoriesAlert) {
+            budgetAlertStore.set({
+                isVisible: true,
+                message: budgetExceeded
+                    ? `You have exceeded your total budget of ${userSettings.totalBudgetLimit}.`
+                    : `One or more categories have exceeded their budget limits.`,
+            });
+        } else {
+            budgetAlertStore.set({ isVisible: false, message: '' });
+        }
+    }, [budgetExceeded, categoriesAlert, userSettings.totalBudgetLimit]);
 
     return (
-        // Conditional rendering of the alert
-        // Instructions:
-        // - If the budget is exceeded, return an `Alert` component with the appropriate message and severity.
-        null // Replace with conditional rendering logic
+        budgetAlertStore.get().isVisible && (
+            <Alert severity="warning" sx={{ mb: 2 }}>
+                {budgetAlertStore.get().message}
+            </Alert>
+        )
     );
 };
 
