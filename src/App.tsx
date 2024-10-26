@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ThemeProvider, CssBaseline, Box, Container } from '@mui/material';
+
 import { lightTheme, darkTheme } from './theme'; // Import both themes
 import Navbar from './components/Navbar';
 import Dashboard from './components/Dashboard';
@@ -11,9 +12,9 @@ import Analysis from './components/Analysis';
 import Settings from './components/Settings';
 import Footer from './components/Footer';
 import SupportPage from './components/SupportPage';
-import LoginPage from './components/LoginPage';
-import RegisterPage from './components/RegisterPage';
-import ProtectedRoute from './components/ProtectedRoute'; // Import for route protection
+import LoginPage from './components/LoginPage.tsx';
+import RegisterPage from './components/RegisterPage.tsx';
+import ProtectedRoute from './components/ProtectedRoute.tsx'; // Import for route protection
 import { authStore } from './stores/authStore'; // Import auth store for authentication state
 import { useStore } from '@nanostores/react'; // Nanostores to track auth
 import BudgetAlert from './components/BudgetAlert'; // Importar BudgetAlert

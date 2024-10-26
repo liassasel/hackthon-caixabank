@@ -3,43 +3,47 @@ import { useNavigate } from 'react-router-dom';
 import { Box, Button, TextField, Typography, Alert } from '@mui/material';
 import { login } from '../stores/authStore'; 
 
-function RegisterPage() {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('');
-    const [error, setError] = useState('');
-    const [success, setSuccess] = useState(false);
+
+const RegisterPage: React.FC = () => {
+    const  [email, setEmail] = useState<string>('');
+    const  [password, setPassword] = useState<string>('');
+    const  [confirmPassword, setConfirmPassword] = useState<string> ('');
+    const  [error, setError] = useState<string>('');
+    const  [success, setSuccess] = useState(false);
     const navigate = useNavigate();
 
-    const handleRegister = (e) => {
+    // Validate all fields
+    const handleRegister = (e: React.FormEvent) => {
         e.preventDefault();
 
-        // Instructions:
+        if (!email || !password || !confirmPassword) {
+            setError('Please complete all fields');
+            return;
+        }
 
-        // Validate that all fields (email, password, confirmPassword) are filled.
-        // - If any field is empty, display an error message.
+        // Verify id passwords match
+        if (password !== confirmPassword) {
+            setError('Passwords do not match');
+            return;
+        }
 
-        // Check if the passwords match.
-        // - If the passwords do not match, set an appropriate error message.
+        // Verify if email are register yet
+        const existingUser = localStorage.getItem(email);
+        if (existingUser) {
+            setError('Email is already registered')
+        }
 
-        // Check if the email is already registered in localStorage.
-        // - Retrieve the existing user from localStorage and verify if the entered email already exists.
-        // - If the email exists, set an error message.
+        // Save User in LocalStorage
+        const newUser = { email, password }
+        localStorage.setItem(email, JSON.stringify(newUser));
 
-        // Save the new user's data to localStorage.
-        // - If validation passes, store the new user's email and password in localStorage.
-
-        // Automatically log the user in after successful registration.
-        // - Call the `login` function to set the authenticated user in the store.
-
-        // Redirect the user to the dashboard.
-        // - After successful registration and login, redirect the user to the home/dashboard page.
-
+        // Automatically login and redirect
+        login();
         setSuccess(true);
         setTimeout(() => {
-            navigate('/');
+            navigate('/'); 
         }, 2000);
-    };
+}
 
     return (
         <Box sx={{ maxWidth: 400, mx: 'auto', mt: 8, p: 2, border: '1px solid #ddd', borderRadius: 2 }}>
@@ -102,5 +106,6 @@ function RegisterPage() {
         </Box>
     );
 }
+
 
 export default RegisterPage;
