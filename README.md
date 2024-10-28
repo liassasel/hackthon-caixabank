@@ -169,7 +169,7 @@ A1: Yes, as it is a hackathon, you are free to modify anything within the projec
 
 **Q2: Can I add resources that are not in package.json?**
 
-A2: Yes, new resources can be added if necessary.
+A2: Yes, new resources can be added if necessary :)
 
 
 
