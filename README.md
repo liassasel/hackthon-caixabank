@@ -171,7 +171,7 @@ A1: Yes, as it is a hackathon, you are free to modify anything within the projec
 
 A2: Yes, new resources can be added if necessary :)
 
-
+Pending...
 
 
 
